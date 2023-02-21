@@ -70,8 +70,8 @@ class ResNet(nn.Module):
         self.aver_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.linear = nn.Linear(512 * block.expension, 1024)
 
-    def _make_layer(self, block, output_channels, block_nums, stride):
-        strides = [stride] + [1] * (block_nums - 1)
+    def _make_layer(self, block, output_channels, block_num, stride):
+        strides = [stride] + [1] * (block_num - 1)
         layer = []
         for stride in strides:
             layer.append(block(self.input_channels, output_channels, stride))
