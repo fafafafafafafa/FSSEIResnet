@@ -7,7 +7,7 @@ class MyFsSeiDataset(torch.utils.data.Dataset):
     def __init__(self, filepath_x, filepath_y, transform_x=None, transform_y=None):
         super(MyFsSeiDataset, self).__init__()
         self.X = np.load(filepath_x)
-        self.Y = np.load(filepath_y)
+        self.Y = np.uint8(np.load(filepath_y))
         self.transform_x = transform_x
         self.transform_y = transform_y
         if self.transform_x:
@@ -23,14 +23,21 @@ class MyFsSeiDataset(torch.utils.data.Dataset):
 
 
 def get_train_dataset(num, transform_x=None, transform_y=None):
-    filepath_x = 'D:/Demo/myPycharm/FS-SEI_4800/Dataset/X_train_{}Class.npy'.format(num)
-    filepath_y = 'D:/Demo/myPycharm/FS-SEI_4800/Dataset/Y_train_{}Class.npy'.format(num)
+    filepath_x = '../SplitFSSEIDataset/X_split_train_{}Classes.npy'.format(num)
+    filepath_y = '../SplitFSSEIDataset/Y_split_train_{}Classes.npy'.format(num)
+    return MyFsSeiDataset(filepath_x, filepath_y, transform_x, transform_y)
+
+
+def get_val_dataset(num, transform_x=None, transform_y=None):
+    filepath_x = '../SplitFSSEIDataset/X_split_val_{}Classes.npy'.format(num)
+    filepath_y = '../SplitFSSEIDataset/Y_split_val_{}Classes.npy'.format(num)
     return MyFsSeiDataset(filepath_x, filepath_y, transform_x, transform_y)
 
 
 def get_test_dataset(num, transform_x=None, transform_y=None):
-    filepath_x = 'D:/Demo/myPycharm/FS-SEI_4800/Dataset/X_test_{}Class.npy'.format(num)
-    filepath_y = 'D:/Demo/myPycharm/FS-SEI_4800/Dataset/Y_test_{}Class.npy'.format(num)
+    filepath_x = 'H:/demo/FS-SEI_4800/Dataset/X_test_{}Class.npy'.format(num)
+    filepath_y = 'H:/demo/FS-SEI_4800/Dataset/Y_test_{}Class.npy'.format(num)
+
     return MyFsSeiDataset(filepath_x, filepath_y, transform_x, transform_y)
 
 
