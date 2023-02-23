@@ -8,11 +8,11 @@ class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
         super().__init__()
         self.residual_function = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=(1, 3), padding=(0, 1), stride=(1, stride)),
-            nn.BatchNorm2d(out_channels),
+            nn.Conv1d(in_channels, out_channels, kernel_size=(1, 3), padding=(0, 1), stride=(1, stride)),
+            nn.BatchNorm1d(out_channels),
             nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels * BasicBlock.expension, kernel_size=(1, 3), padding=(0, 1)),
-            nn.BatchNorm2d(out_channels * BasicBlock.expension)
+            nn.Conv1d(out_channels, out_channels * BasicBlock.expension, kernel_size=(1, 3), padding=(0, 1)),
+            nn.BatchNorm1d(out_channels * BasicBlock.expension)
 
         )
         self.shortcut = nn.Sequential()
@@ -59,16 +59,18 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         self.input_channels = 32
         self.c1 = nn.Sequential(
-            nn.Conv2d(1, self.input_channels, kernel_size=(1, 3), padding=(0, 1), stride=(1, 1)),
+            nn.Conv2d(1, self.input_channels, kernel_size=(2, 3), padding=(0, 1), stride=(1, 1)),
             nn.BatchNorm2d(self.input_channels),
             nn.ReLU()
         )
         self.c2 = self._make_layer(block, self.input_channels, block_nums[0], stride=2)
         self.c3 = self._make_layer(block, self.input_channels, block_nums[1], stride=2)
+
         self.c4 = self._make_layer(block, self.input_channels, block_nums[2], stride=2)
         self.c5 = self._make_layer(block, self.input_channels, block_nums[3], stride=2)
+
         self.aver_pool = nn.MaxPool2d(kernel_size=(1, 2), stride=(1, 2))
-        self.linear = nn.Linear(self.input_channels * block.expension*2*150, 1024)
+        self.linear = nn.Linear(self.input_channels * block.expension*1*150, 1024)
 
     def _make_layer(self, block, output_channels, block_num, stride):
         strides = [stride] + [1] * (block_num - 1)
@@ -82,16 +84,18 @@ class ResNet(nn.Module):
     def forward(self, x):
 
         # torch.size(n, 1, 2, 4800)
-        x1 = self.c1(x)
-        x2 = self.c2(x1)
-        x3 = self.c3(x2)
-        x4 = self.c4(x3)
-        x5 = self.c5(x4)
-        x6 = self.aver_pool(x5)
-        x7 = x6.view(x6.size(0), -1)
-        x8 = self.linear(x7)
+        x = self.c1(x)
 
-        return x8
+        x = self.c2(x)
+        x = self.c3(x)
+        '''x = self.c4(x)
+        x = self.c5(x)'''
+        x = self.aver_pool(x)
+        x = x.view(x.size(0), -1)
+
+        x = self.linear(x)
+
+        return x
 
 
 def resnet18():

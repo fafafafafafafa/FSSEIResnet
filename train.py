@@ -138,9 +138,11 @@ def train():
     # model
     # my_model = None
     if args.model_name == 'resnet18':
-        my_model = MyModel.ResNetForClass(ResNetRadio.resnet18(), args)
+        my_model = MyModel.ResNetForClass(ResNetRadio.resnet18(), args, mode=True)
     elif args.model_name == 'resnet34':
-        my_model = MyModel.ResNetForClass(ResNetRadio.resnet34(), args)
+        my_model = MyModel.ResNetForClass(ResNetRadio.resnet34(), args, mode=True)
+    elif args.model_name == 'cvcnn':
+        my_model = MyModel.base_model(args, mode=True)
     else:
         raise ValueError('model is None!')
     torchinfo.summary(my_model)
