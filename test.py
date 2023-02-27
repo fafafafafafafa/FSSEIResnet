@@ -143,6 +143,7 @@ def test():
     N_ways = [10]
     K_shots = [5]
     N_query = 5
+
     epochs = 300
 
     for N_way in N_ways:

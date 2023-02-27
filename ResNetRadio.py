@@ -13,7 +13,6 @@ class BasicBlock(nn.Module):
             nn.ReLU(inplace=True),
             nn.Conv2d(out_channels, out_channels * BasicBlock.expension, kernel_size=(3, 3), padding=(1, 1)),
             nn.BatchNorm2d(out_channels * BasicBlock.expension)
-
         )
         self.shortcut = nn.Sequential()
         # make x match the output
@@ -98,6 +97,7 @@ class ResNet(nn.Module):
 
         x = self.c2(x)
         x = self.c3(x)
+
         x = self.c4(x)
         x = self.c5(x)
         x = self.c6(x)
