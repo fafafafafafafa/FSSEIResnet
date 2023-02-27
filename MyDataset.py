@@ -41,6 +41,32 @@ def get_test_dataset(num, transform_x=None, transform_y=None):
     return MyFsSeiDataset(filepath_x, filepath_y, transform_x, transform_y)
 
 
+def get_test_support_dataset(num, transform_x=None, transform_y=None):
+    x = np.load('H:/demo/FS-SEI_4800/Dataset/X_train_{}Class.npy'.format(num))
+    y = np.load('H:/demo/FS-SEI_4800/Dataset/Y_train_{}Class.npy'.format(num))
+    if transform_x:
+        x = transform_x(x)
+    if transform_y:
+        y = transform_y(y)
+
+    y = y.astype(np.uint8)
+
+    return x, y
+
+
+def get_test_query_dataset(num, transform_x=None, transform_y=None):
+    x = np.load('H:/demo/FS-SEI_4800/Dataset/X_test_{}Class.npy'.format(num))
+    y = np.load('H:/demo/FS-SEI_4800/Dataset/Y_test_{}Class.npy'.format(num))
+    if transform_x:
+        x = transform_x(x)
+    if transform_y:
+        y = transform_y(y)
+
+    y = y.astype(np.uint8)
+
+    return x, y
+
+
 if __name__ == '__main__':
     train_dataset = get_train_dataset(90)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=128, shuffle=True)

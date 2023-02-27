@@ -3,6 +3,6 @@ batch_size,lr,epochs
 model_name,optimizer_name,loss_fn_name
 resnet34,adam,cross_entropy_loss
 early_stopping_patience,early_stopping_delta
-35,0.01
+25,0.01
 adjust_lr_patience,adjust_lr_delta,adjust_lr_gamma
-10,0.01,0.5
+7,0.001,0.5
