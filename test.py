@@ -1,3 +1,4 @@
+import os
 import time
 import torch
 import torch.nn as nn
@@ -141,7 +142,7 @@ def test():
     encoder.eval()
 
     N_ways = [10]
-    K_shots = [5]
+    K_shots = [1, 5]
     N_query = 5
 
     epochs = 300
@@ -184,8 +185,12 @@ def test():
                 '''data_loss.append([epoch, test_loss])
                 acc_test[epoch, :] = acc
                 time_test[epoch, :] = t'''
+            test_data_dir_path = args.data_dir_path + args.model_name + '/' + \
+                                 '{}way_{}shot_{}query'.format(N_way, K_shot, N_query)
+            if not os.path.exists(test_data_dir_path):
+                os.makedirs(test_data_dir_path)
 
-            csvfile = open(args.data_dir_path + args.model_name + '/' + 'acc.csv', "w", newline="")  # w覆盖， a追加
+            csvfile = open(test_data_dir_path + '/' + 'acc.csv', "w", newline="")  # w覆盖， a追加
             writer = csv.writer(csvfile)
             writer.writerow(['aver_acc', 'min_acc', 'max_acc', 'std_acc', 'aver_time'])
             writer.writerows([[np.mean(acc_test), np.min(acc_test), np.max(acc_test), np.std(acc_test)]])

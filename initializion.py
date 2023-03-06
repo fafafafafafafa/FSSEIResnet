@@ -14,7 +14,7 @@ def init():
     parser.add_argument('--epochs', type=int, default=100, help='max epochs for train')
 
     # model
-    parser.add_argument('--model_name', type=str, default='cvcnn', help='model for train')
+    parser.add_argument('--model_name', type=str, default='resnet18', help='model for train')
 
     # optimizer
     parser.add_argument('--optimizer_name', type=str, default='adam', help='optimizer for train')

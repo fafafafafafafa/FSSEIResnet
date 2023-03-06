@@ -77,6 +77,7 @@ def val_one_epoch(args, val_data_loader, my_model, loss_fn):
     running_loss = 0.0
     running_correct = 0
     val_loss = 0
+    acc = 0
 
     for batch, (X, y) in enumerate(val_data_loader, 1):
         if torch.cuda.is_available():
@@ -100,6 +101,7 @@ def val_one_epoch(args, val_data_loader, my_model, loss_fn):
         running_correct += torch.sum(labels_pred.eq(labels))
 
         # 打印训练结果
+
         if batch == len(val_data_loader):
             val_loss = running_loss / batch
             acc = 100 * running_correct / (args.batch_size * batch)
@@ -112,7 +114,7 @@ def val_one_epoch(args, val_data_loader, my_model, loss_fn):
                     lens=args.batch_size * batch,
                     acc=acc
                 ))
-    return val_loss
+    return val_loss, acc.detach().item()
 
 
 def normalize_data(X):
@@ -180,9 +182,9 @@ def train():
         train_loss = train_one_epoch(args, train_data_loader, my_model, loss_fn, optimizer)
         print('train_time :', time.time() - start_time)
         start_time = time.time()
-        val_loss = val_one_epoch(args, val_data_loader, my_model, loss_fn)
+        val_loss, val_acc = val_one_epoch(args, val_data_loader, my_model, loss_fn)
         print('val_time :', time.time() - start_time)
-        data_loss.append([epoch, train_loss, val_loss])
+        data_loss.append([epoch, train_loss, val_loss, val_acc])
         adjust_lr(val_loss, optimizer)
         early_stopping(val_loss, my_model, epoch)
         if early_stopping.early_stop:
@@ -198,7 +200,7 @@ def train():
     filename = 'train_val_loss.csv'
     csvfile = open(data_whole_dir_path+filename, 'w', newline='')
     writer = csv.writer(csvfile)
-    writer.writerow(['epoch', 'train_loss', 'val_loss'])
+    writer.writerow(['epoch', 'train_loss', 'val_loss', 'val_acc'])
     writer.writerows(data_loss)
     csvfile.close()
 
